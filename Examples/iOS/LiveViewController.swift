@@ -222,7 +222,20 @@ final class LiveViewController: UIViewController {
 
     @objc
     private func didRouteChangeNotification(_ notification: Notification) {
-        logger.info("didRouteChangeNotification")
+        guard let userInfo = notification.userInfo,
+        let reasonValue = userInfo[AVAudioSessionRouteChangeReasonKey] as? UInt,
+        let reason = AVAudioSession.RouteChangeReason(rawValue:reasonValue) else {
+            return
+        }
+        logger.info("didRouteChangeNotification: \(reasonValue)")
+        switch reason {
+            case .newDeviceAvailable:
+                break
+            case .oldDeviceUnavailable:
+                break
+            default:
+                break
+        }
     }
 
     @objc
