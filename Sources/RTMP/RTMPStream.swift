@@ -267,6 +267,21 @@ open class RTMPStream: NetStream {
             }
         }
     }
+
+    /// Pauses playback or publish of a only video stream or not.
+    open var pausedVideo = false {
+        didSet {
+            lockQueue.async {
+                switch self.readyState {
+                case .publish, .publishing:
+                    self.mixer.videoIO.encoder.muted = self.pausedVideo
+                default:
+                    break
+                }
+            }
+        }
+    }
+
     var id: UInt32 = RTMPStream.defaultID
     var readyState: ReadyState = .initialized {
         didSet {
